@@ -33,13 +33,20 @@ var mainState = {
     this.pipes.enableBody = true;  // Add physics to the group
     this.pipes.createMultiple(20, 'pipe'); // Create 20 pipes
 
-    this.timer = game.time.events.loop(1500, this.addRowOfPipes, this); 
+    // Timer to create each row of pipes
+    this.timer = game.time.events.loop(1500, this.addRowOfPipes, this);
+
+    // Score
+    this.score = 0;
+    this.labelScore = game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
   },
 
   update: function() {
     // If the bird is out of the world (too high or too low), call the 'restartGame' function
     if (this.bird.inWorld == false)
       this.restartGame();
+
+    game.physics.arcade.overlap(this.bird, this.pipes, this.restartGame, null, this);
   },
   // Make the bird jump
   jump: function() {
@@ -76,7 +83,11 @@ var mainState = {
     for (var i = 0; i < 8; i++)
       if (i != hole && i != hole + 1)
         this.addOnePipe(400, i * 60 + 10);
-      },
+
+    // Update the score when creates a new pipes
+    this.score += 1;
+    this.labelScore.text = this.score;
+  },
 };
 
 // Add and start the 'main' state to start the game
